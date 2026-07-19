@@ -1,5 +1,5 @@
-# Build stage: possui shell e ferramentas de desenvolvimento
-FROM cgr.dev/chainguard/python:3.11-dev AS builder
+# Build stage
+FROM cgr.dev/chainguard/python:3.12-dev AS builder
 
 WORKDIR /app
 
@@ -10,9 +10,8 @@ RUN python -m venv /app/venv \
 
 COPY . /app
 
-
-# Runtime stage: mínimo e distroless
-FROM cgr.dev/chainguard/python:3.11
+#Run stage
+FROM cgr.dev/chainguard/python:3.12
 
 WORKDIR /app
 
