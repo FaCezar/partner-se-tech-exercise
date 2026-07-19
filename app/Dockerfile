@@ -1,5 +1,5 @@
 # Build stage: possui shell e ferramentas de desenvolvimento
-FROM cgr.dev/chainguard/python:latest-dev AS builder
+FROM cgr.dev/chainguard/python:3.11-dev AS builder
 
 WORKDIR /app
 
