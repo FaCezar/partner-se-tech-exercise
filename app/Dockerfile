@@ -12,7 +12,7 @@ COPY . /app
 
 
 # Runtime stage: mínimo e distroless
-FROM cgr.dev/chainguard/python:latest
+FROM cgr.dev/chainguard/python:3.11
 
 WORKDIR /app
 
