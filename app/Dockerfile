@@ -9,22 +9,22 @@ ENV LANG=C.UTF-8 \
 
 WORKDIR /app
 
-# Keep dependencies separate from the application directory.
+
 RUN python -m venv /venv
 
 ENV PATH="/venv/bin:${PATH}"
 
-# Copy dependency metadata separately for build caching.
+
 COPY requirements.txt /app/requirements.txt
 
-# Use Chainguard Libraries through an ephemeral BuildKit secret.
+
 RUN --mount=type=secret,id=pip_config,target=/run/secrets/pip.conf \
     PIP_CONFIG_FILE=/run/secrets/pip.conf \
     pip install \
         --no-cache-dir \
         --requirement /app/requirements.txt
 
-# Copy application source only after dependency installation.
+
 COPY . /app
 
 
@@ -38,7 +38,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Copy only the virtual environment and application required at runtime.
+
 COPY --from=builder --chown=65532:65532 /venv /venv
 COPY --from=builder --chown=65532:65532 /app /app
 
