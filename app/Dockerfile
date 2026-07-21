@@ -1,6 +1,7 @@
 
-# Builder
+# syntax=docker/dockerfile:1.7
 
+# Builder
 FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV LANG=C.UTF-8 \
@@ -22,10 +23,10 @@ RUN --mount=type=secret,id=pip_config,target=/run/secrets/pip.conf \
 COPY . .
 
 # Runtime
-
 FROM cgr.dev/chainguard/python:latest
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
+ENV LANG=C.UTF-8 \
+    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/app/venv/bin:${PATH}"
 
