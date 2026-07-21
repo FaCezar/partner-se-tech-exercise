@@ -1,8 +1,6 @@
-# syntax=docker/dockerfile:1.7
 
-# ============================================================
 # Build stage
-# ============================================================
+
 FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV LANG=C.UTF-8 \
@@ -29,9 +27,9 @@ RUN --mount=type=secret,id=pip_config,target=/run/secrets/pip.conf \
 # Copy application source only after dependency installation.
 COPY . /app
 
-# ============================================================
+
 # Runtime stage
-# ============================================================
+
 FROM cgr.dev/chainguard/python:latest
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
