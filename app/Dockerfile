@@ -1,25 +1,33 @@
 
 # Build stage
 
+
 FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV LANG=C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PATH="/app/venv/bin:$PATH"
 
 WORKDIR /app
 
 RUN python -m venv /app/venv
 
+ENV PATH="/app/venv/bin:${PATH}"
+
+
 COPY requirements.txt /app/
 
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN --mount=type=secret,id=pip_config,target=/run/secrets/pip.conf \
+    PIP_CONFIG_FILE=/run/secrets/pip.conf \
+    pip install \
+        --no-cache-dir \
+        --requirement /app/requirements.txt
 
 COPY . /app
 
 
 # Runtime stage
+
 
 FROM cgr.dev/chainguard/python:latest
 
@@ -27,9 +35,12 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PATH="/venv/bin:$PATH"
+ENV PATH="/app/venv/bin:${PATH}"
 
-COPY --from=builder /app/venv /venv
+# Copy only what is required to run the application
+COPY --from=builder /app/venv /app/venv
 COPY --from=builder /app /app
+
+EXPOSE 8000
 
 ENTRYPOINT ["python", "/app/app.py"]
