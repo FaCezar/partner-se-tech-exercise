@@ -1,1 +1,11 @@
-
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+.git/
+.gitignore
+Dockerfile*
+README*
