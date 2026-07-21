@@ -3,6 +3,8 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
+      secrets:
+        - pip_config
 
     ports:
       - "8000:8000"
@@ -31,3 +33,7 @@ services:
 
 volumes:
   postgres_data:
+
+secrets:
+  pip_config:
+    file: ./pip.conf
