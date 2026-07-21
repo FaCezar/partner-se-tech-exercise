@@ -1,4 +1,6 @@
-# Build stage
+
+# Builder
+
 FROM cgr.dev/chainguard/python:latest-dev AS builder
 
 ENV LANG=C.UTF-8 \
@@ -11,18 +13,16 @@ RUN python -m venv /app/venv
 
 ENV PATH="/app/venv/bin:${PATH}"
 
-COPY requirements.txt /app/requirements.txt
+COPY requirements.txt .
 
 RUN --mount=type=secret,id=pip_config,target=/run/secrets/pip.conf \
     PIP_CONFIG_FILE=/run/secrets/pip.conf \
-    pip install \
-        --no-cache-dir \
-        --requirement /app/requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
+COPY . .
 
+# Runtime
 
-# Runtime stage
 FROM cgr.dev/chainguard/python:latest
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -31,12 +31,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY --from=builder --chown=65532:65532 /app/venv /app/venv
 COPY --from=builder --chown=65532:65532 /app /app
 
 EXPOSE 8000
 
 USER 65532:65532
 
-ENTRYPOINT ["gunicorn"]
-CMD ["--bind", "0.0.0.0:8000", "--workers", "2", "--access-logfile", "-", "app:app"]
+ENTRYPOINT ["python"]
+CMD ["app.py"]
